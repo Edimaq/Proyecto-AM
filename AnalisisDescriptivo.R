@@ -278,3 +278,37 @@ ggplot(df_cluster, aes(x = Category, fill = Cluster)) +
   labs(title = "Distribución de clusters por Categoría de publicación", y = "Proporción") +
   theme_minimal()
 
+# Selección de variables cuantitativas para PCA
+vars_pca <- df2 %>%
+  select(Reach, Impressions, EUsers, PConsumers, PConsumptions,
+         PIPLP, PRPLP, PPLE, Interactions)
+
+# Eliminamos filas con NA y escalamos las variables
+vars_pca_clean <- na.omit(vars_pca)
+vars_pca_scaled <- scale(vars_pca_clean)
+
+# Aplicar PCA
+pca_result <- prcomp(vars_pca_scaled, center = TRUE, scale. = TRUE)
+
+# Resumen de la varianza explicada por componente
+summary(pca_result)
+
+# Scree plot (gráfico de varianza explicada)
+fviz_eig(pca_result, addlabels = TRUE, barfill = "steelblue", barcolor = "black") +
+  labs(title = "Proporción de Varianza Explicada por Componente")
+
+# Gráfico de individuos
+fviz_pca_ind(pca_result,
+             geom.ind = "point",
+             col.ind = "cos2",
+             gradient.cols = c("lightblue", "blue", "darkblue"),
+             repel = TRUE) +
+  labs(title = "Proyección de las Publicaciones en el Plano Principal")
+
+# Gráfico de variables
+fviz_pca_var(pca_result,
+             col.var = "contrib",
+             gradient.cols = c("lightgreen", "darkgreen"),
+             repel = TRUE) +
+  labs(title = "Correlación de Variables con los Componentes Principales")
+
