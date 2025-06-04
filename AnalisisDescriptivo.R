@@ -6,7 +6,7 @@ library(corrplot)   # Matriz de correlaciones
 library(scales)     # Para formatear ejes (e.g. comas en miles)
 library(tidyverse)
 library(factoextra) # Para visualización de PCA
-
+library(GGally)
 
 
 # ---------------------------------------------
@@ -42,11 +42,19 @@ df2 <- df %>%
     PHour    = as.integer(PHour)
   ) 
 
-#creacion de nuevas variables 
+#Correlaciones
+gpairs(df2[,c(1,8,9,10,11,15,19)], aes(color = df2$Type, alpha = 0.5),
+        upper = list(continuous = wrap("cor", size = 2.5)))
+
+#Definimos las nuevas variables que son las impresiones y los usuarios que no les gusta la pagina
 newReach<-df2$Reach-df2$PRPLP
 newImpresiones<-df2$Impressions-df2$PIPLP
 df2$NReach<-newReach
 df2$NImpressions<-newImpresiones
+
+#Correlaciones 2
+ggpairs(df2[,c(1,10,11,15,19,20,21)], aes(color = df2$Type, alpha = 0.5),
+        upper = list(continuous = wrap("cor", size = 2.5)))
 # ---------------------------------------------
 # 3. Estadísticas descriptivas básicas
 # ---------------------------------------------
