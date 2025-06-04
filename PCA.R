@@ -1,3 +1,56 @@
+# ---------------------------------------------
+# Librerías usadas
+library(readxl)     # Para leer Excel
+library(dplyr)      # Manipulación de data frames
+library(ggplot2)    # Gráficos
+library(corrplot)   # Matriz de correlaciones
+library(scales)     # Para formatear ejes (e.g. comas en miles)
+library(tidyverse)
+library(factoextra) # Para visualización de PCA
+library(MASS) 
+library(pracma)
+
+# ---------------------------------------------
+# Leemos el archivo de datos, cambiar la ruta
+file <-"C:\\Users\\edima\\Downloads\\dataset_Facebook.xlsx" #Cambiarlo para cada equipo
+df <- data.frame(read_excel(file))
+
+head(df)
+
+# Convertimos variables categóricas a factores y renombramos algunas variables 
+df2 <- df %>%
+  rename(
+    PLikes        = `Page.total.likes`,
+    PMonth        = `Post.Month`,
+    PWeekday      = `Post.Weekday`,
+    PHour         = `Post.Hour`,
+    Reach            = `Lifetime.Post.Total.Reach`,
+    Impressions      = `Lifetime.Post.Total.Impressions`,
+    EUsers     = `Lifetime.Engaged.Users`,
+    PConsumers    = `Lifetime.Post.Consumers`,
+    PConsumptions    = `Lifetime.Post.Consumptions`,
+    PIPLP    = `Lifetime.Post.Impressions.by.people.who.have.liked.your.Page`,
+    PRPLP    = `Lifetime.Post.reach.by.people.who.like.your.Page`,
+    PPLE = `Lifetime.People.who.have.liked.your.Page.and.engaged.with.your.post`,
+    Interactions    = `Total.Interactions`
+  ) %>%
+  mutate(
+    Type      = as.factor(Type),
+    Category  = as.factor(Category),
+    Paid      = as.factor(Paid),
+    PMonth   = as.integer(PMonth),
+    PWeekday = as.integer(PWeekday),
+    PHour    = as.integer(PHour),
+    Reach            = as.integer(Reach),
+    Impressions      = as.integer(Impressions),
+    EUsers     = as.integer(EUsers),
+    PConsumers    = as.integer(PConsumers),
+    PConsumptions    = as.integer(PConsumptions),
+    PIPLP    = as.integer(PIPLP),
+    PRPLP    = as.integer(PRPLP),
+    PPLE = as.integer(PPLE),
+    Interactions    = as.integer(Interactions)
+  ) 
 # Componentes principales 
 # Seleccionamos variables numericas de importancia
 df_pca<- df2 %>%
