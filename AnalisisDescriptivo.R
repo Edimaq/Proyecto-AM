@@ -238,3 +238,43 @@ ggplot(df2, aes(x = Paid, y = Interactions, fill = Paid)) +
   ) +
   theme_minimal() +
   theme(legend.position = "none")
+
+# ---------------------------------------------
+# 7. Clustering (k-means) para segmentación de publicaciones
+# ---------------------------------------------
+
+# Seleccionar variables numéricas para clustering
+vars_num_cluster <- df2 %>%
+  select(Reach, Impressions, EUsers, PConsumers, Interactions) %>%
+  filter(complete.cases(.)) # eliminar NAs
+
+# Escalamiento de variables
+vars_scaled <- scale(vars_num_cluster)
+
+# k-means con 3 clusters
+set.seed(123)
+k3 <- kmeans(vars_scaled, centers = 3, nstart = 25)
+
+# Añadir clusters al dataframe original, filtrando filas con datos completos
+df_cluster <- df2 %>%
+  filter(complete.cases(Reach, Impressions, EUsers, PConsumers, Interactions)) %>%
+  mutate(Cluster = factor(k3$cluster))
+
+# Tabla de contingencia: Cluster vs Tipo de publicación
+print(table(df_cluster$Type, df_cluster$Cluster))
+
+# Tabla de contingencia: Cluster vs Categoría
+print(table(df_cluster$Category, df_cluster$Cluster))
+
+# Gráfico: Distribución de clusters por Tipo
+ggplot(df_cluster, aes(x = Type, fill = Cluster)) +
+  geom_bar(position = "fill") +
+  labs(title = "Distribución de clusters por Tipo de publicación", y = "Proporción") +
+  theme_minimal()
+
+# Gráfico: Distribución de clusters por Categoría
+ggplot(df_cluster, aes(x = Category, fill = Cluster)) +
+  geom_bar(position = "fill") +
+  labs(title = "Distribución de clusters por Categoría de publicación", y = "Proporción") +
+  theme_minimal()
+
