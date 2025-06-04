@@ -42,7 +42,11 @@ df2 <- df %>%
     PHour    = as.integer(PHour)
   ) 
 
-
+#creacion de nuevas variables 
+newReach<-df2$Reach-df2$PRPLP
+newImpresiones<-df2$Impressions-df2$PIPLP
+df2$NReach<-newReach
+df2$NImpressions<-newImpresiones
 # ---------------------------------------------
 # 3. Estadísticas descriptivas básicas
 # ---------------------------------------------
