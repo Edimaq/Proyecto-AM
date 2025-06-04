@@ -9,6 +9,7 @@ library(tidyverse)
 library(factoextra) # Para visualización de PCA
 library(MASS) 
 library(pracma)
+library(cluster)
 
 # ---------------------------------------------
 # Leemos el archivo de datos, cambiar la ruta
@@ -119,3 +120,24 @@ ggplot(mds_coords, aes(x = Dim1, y = Dim2, color = Paid)) +
   theme_minimal() +
   theme(legend.title = element_text(size = 10),
         legend.text  = element_text(size = 9))
+
+k3 <- kmeans(vars_scaled, centers = 3, nstart = 25)
+k3$centers
+
+# Añadir clusters al dataframe original, filtrando filas con datos completos
+df_cluster <- df2 %>%
+  mutate(Cluster = factor(k3$cluster))
+mds_coords$Cluster <- df_cluster$Cluster
+#resultados para el cluster
+ggplot(mds_coords, aes(x = Dim1, y = Dim2, color = Cluster)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "MDS Clásico en Publicaciones de Facebook",
+    subtitle = paste0("Dim1: ", pct_dim1, "% varianza | Dim2: ", pct_dim2, "% varianza"),
+    x = paste0("Dimensión 1 (", pct_dim1, "%)"),
+    y = paste0("Dimensión 2 (", pct_dim2, "%)")
+  ) +
+  theme_minimal() +
+  theme(legend.title = element_text(size = 10),
+        legend.text  = element_text(size = 9))
+
